@@ -1,0 +1,58 @@
+{% extends "layout.html" %} {% block content %}
+
+{{ page_title('Contact Us') }}
+
+  <div class="row">
+    <div class="col-lg-6">
+      <form method="POST" role="form" action="contact">
+        {{ form.csrf }}
+
+        {% if form.errors %}
+        <div class="alert alert-warning" style="color:#DC143C;padding-bottom: 0;">
+          <p>Please fix the errors and try again.</p>
+          <ul class="errors">
+            {% for field_name, field_errors in form.errors|dictsort if
+            field_errors %} {% for error in field_errors %}
+            <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %} {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="form-group row">
+          <label for="inputName" class="col-lg-2 col-form-label">{{
+            form.inputName.label
+          }}</label>
+          <div class="col-lg-8">
+            <input type="text" class="form-control" id="inputName" name="inputName" value="{{ form.inputName.data }}"
+              placeholder="Your Name" required />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputEmail" class="col-lg-2 col-form-label">{{ form.inputEmail.label }}</label>
+          <div class="col-lg-8">
+            <input type="email" class="form-control" id="inputEmail" name="inputEmail"
+              value="{{ form.inputEmail.data }}" placeholder="Your Email Address" required />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputMessage" class="col-lg-2 col-form-label">{{ form.inputMessage.label }}</label>
+          <div class="col-lg-10">
+            <textarea id="inputMessage" name="inputMessage" placeholder="Your Message..." class="form-control" rows="3"
+              required>{{ form.inputMessage.data }}</textarea>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 text-right">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-lg-6">
+      text here...
+    </div>
+  </div>
+
+{% endblock %}

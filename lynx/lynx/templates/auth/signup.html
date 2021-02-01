@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{{ page_title('Create Account') }}
+
+<div class="col-lg-12">
+  <form method="POST" role="form" action="signup">
+    {{ form.csrf }}
+
+    {% if form.errors %}
+    <div class="alert alert-warning" style="color: #DC143C; padding-bottom: 0;">
+      <p>Please fix the errors and try again.</p>
+      <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if
+          field_errors %} {% for error in field_errors %}
+        <li>{{ form[field_name].label }}: {{ error }}</li>
+        {% endfor %} {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="form-group row">
+      <label for="firstName" class="col-lg-2 col-form-label">{{
+          form.firstName.label
+        }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="firstName" name="firstName" value="{{ form.firstName.data }}"
+          placeholder="First Name" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="lastName" class="col-lg-2 col-form-label">{{
+            form.lastName.label
+          }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="lastName" name="lastName" value="{{ form.lastName.data }}"
+          placeholder="Last Name" required />
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label for="email" class="col-lg-2 col-form-label">{{
+              form.email.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="email" name="email" value="{{ form.email.data }}"
+          placeholder="Email" required />
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label for="password" class="col-lg-2 col-form-label">{{
+              form.password.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="password" class="form-control" id="password" name="password" value="{{ form.password.data }}"
+          placeholder="Password" required />
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label for="confirm" class="col-lg-2 col-form-label">{{
+              form.confirm.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="password" class="form-control" id="confirm" name="confirm" value="{{ form.confirm.data }}"
+          placeholder="Confirm Password" required />
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label for="phone" class="col-lg-2 col-form-label">{{
+              form.phone.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="tel" class="form-control" id="phone" name="phone" value="{{ form.phone.data }}"
+          placeholder="Phone Number" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="language" class="col-lg-2 col-form-label">{{
+              form.language.label
+            }}</label>
+      <div class="col-lg-10">
+        {{form.language(class_="form-control", style="max-width:300px;")}}
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="language" class="col-lg-2 col-form-label"></label>
+      <div class="col-lg-10 ">
+        <input type="checkbox" id="terms">
+        I accept the  <a href="{{ url_for('public.terms') }}">Terms and Conditions</a>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-lg-12 text-right">
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </div>
+    </div>
+
+    
+  </form>
+</div>
+
+
+<div style="padding-bottom:10px;">
+  <span>Already have an account? <a href="{{ url_for('auth.login') }}">Log in.</a><span>
+</div>
+
+{% endblock %}

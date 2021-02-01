@@ -1,0 +1,30 @@
+{% extends "layout.html" %} {% block content %} {{ page_title('Invest') }}
+
+<div class="container d-flex flex-column">
+  <div class="row  justify-content-center ">
+    <div class="col-12 col-md-6 col-lg-6 order-md-2 mt-auto mt-md-0 pt-8 pb-4 py-md-11">
+      <img src="/static/images/Stocks.jpg" alt="..." class="img-fluid">
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-6  order-md-1 mb-auto mb-md-0 pb-8 py-md-11">
+      <h3 class="mb-0 font-weight-bold text-center mt-md-4">
+        Investing for Everyone
+      </h3>
+      <p>
+        <ul style="font-size: 1.2rem;">
+          <li style="padding: 5px;">Invest in the global stock market by purchasing stocks of major
+            corporations such as Microsoft, Tesla, Netflix, Amazon etc</li>
+          <li style="padding: 5px;">No hidden commission fees. Pay $1 for each trade when you buy or sell a stock position</li>
+        </ul>
+      </p>
+      <p></p>
+      <a href="#">Click here to learn more about tokenized stocks</a>
+      <p></p>
+      <p class="mb-0 pt-4">
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary" style="float: right;">Start Investing Now</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

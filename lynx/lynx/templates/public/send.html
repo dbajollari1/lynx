@@ -1,0 +1,30 @@
+{% extends "layout.html" %} {% block content %} {{ page_title('Send') }}
+
+<div class="container d-flex flex-column">
+  <div class="row  justify-content-center ">
+    <div class="col-12 col-md-6 col-lg-6 order-md-2 mt-auto mt-md-0 pt-8 pb-4 py-md-11">
+      <img src="/static/images/Send.jpg" alt="..." class="img-fluid">
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-6  order-md-1 mb-auto mb-md-0 pb-8 py-md-11">
+      <h3 class="mb-0 font-weight-bold text-center mt-md-4">
+        Send Money to Friends and Family
+      </h3>
+      <p >
+        <ul style="font-size: 1.2rem;">
+          <li style="padding: 5px;">The easiest way to transfer digital dollars to family and friends globally without hidden fees</li>
+          <li style="padding: 5px;">Pay one fixed fee of 50 cents for each transfer</li>
+          <li style="padding: 5px;">Transfer digital dollars within minutes as long as both parties have a LynX account</li>
+          <li style="padding: 5px;">You can choose to deposit your money to your bank account in local currency or continue investing and earning high interest with LynX</li>
+        </ul>
+      </p>
+
+      
+      <p class="mb-0 pt-4">
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary" style="float: right;">Start Sending Now</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

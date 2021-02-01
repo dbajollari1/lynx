@@ -1,0 +1,29 @@
+
+========================
+--setup env
+========================
+cd lynx                            # in vscode, just open terminal
+python --version                    # must be higher then 3.7.3
+python -m venv venv
+venv\Scripts\Activate.ps1           # activate environment
+pip install -r ./requirements.txt   # install packages (copy requirements.txt to root)
+flask run                           # run application
+========================
+--update requirments in you local pc
+========================
+pip freeze > requirements.txt
+
+========================
+--Language Support
+========================
+--adding packages
+pip install flask-babel   
+
+--Extracting texts for translation 
+.\venv\Scripts\pybabel extract -F babel.cfg -o messages.pot lynx
+
+--Generating a language catalog (run for each language)
+.\venv\Scripts\pybabel init -i messages.pot -d lynx/translations -l it
+
+--compile trans files
+.\venv\Scripts\pybabel compile -d lynx/translations

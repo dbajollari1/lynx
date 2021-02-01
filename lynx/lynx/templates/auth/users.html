@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<script type=text/javascript src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datatables.min.css') }}">
+
+<script type="text/javascript">   
+    $(document).ready(function() {
+        $('#tblUsers').DataTable( {
+            "scrollX": true
+        } );
+    } );
+</script>
+
+{{ page_title('Users') }}
+
+<table class="display" id="tblUsers" style="width:100%">
+    <thead>
+        <tr>
+            <th>Role</th>
+            <th>Firt Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Member Since</th>
+            <th>Last Login</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in userList %}
+        <tr>
+            <td>{% if user.userRole == 'A' %} Admin  {% else %} User {% endif %}</td>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.created_On.strftime('%d-%b-%Y') }}</td>
+            <td>{{ user.last_login.strftime('%d-%b-%Y') }}</td>
+            <td>
+                <a href="{{ url_for('auth.userinfo', user_id = user.id) }}" role="button">
+                    Edit
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

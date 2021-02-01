@@ -1,0 +1,73 @@
+{% extends "layout.html" %} {% block content %} {{ page_title('Dashboard') }}
+
+<script>
+  function copyToClip() {
+    var copyText = document.getElementById("usrAdr");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    alert("Copied the address: " + copyText.value);
+  }
+</script>
+
+
+{% if showAddr == 'Y' %}
+  Wallet Address: <input type="text" id='usrAdr' size="47" style="border: none;" name='usrAdr' value="{{ ad }}" readonly></input> 
+  <button style="font-size:14px; border: 1px solid gray;" onclick="javascript:copyToClip()"><i class="fa fa-clipboard"></i></button>
+  <br>Your token balance: <b> {{ tokenbalance }} </b>
+  <br>Your ETH balance: <b> {{ ethbalance }} </b>
+{% endif %}
+
+<p></p>
+
+<div class="container">
+  <div
+    class="row"
+    style="font-family: Verdana, Geneva, Tahoma, sans-serif">
+    <div class="col-sm" style="margin-bottom: 10px; margin-left: 10px;">
+      <div class="row" style="padding: 10px 0; font-weight: bold;">Account Balance</div>
+      <div class="row" style="color: darkslategray; font-size: 1.4rem;">
+        <span class="badge badge-pill badge-dark">${{ data.current_balance }}</span>
+      </div>
+    </div>
+    <div class="col-sm" style="margin-bottom: 10px; margin-left: 10px;">
+      <div class="row" style="padding: 10px 0; font-weight: bold;">Current APY</div>
+      <div class="row" style="color: darkslategray; font-size: 1.4rem;">
+        <span class="badge badge-pill badge-dark">{{ data.apy }}%</span>
+      </div>
+    </div>
+    <!-- <div class="col-sm" style="margin-bottom: 10px; margin-left: 10px;">
+      <div class="row" style="padding: 10px 0; font-weight: bold;">Interest Accrued</div>
+      <div class="row" style="color: darkslategray; font-size: 1.3rem;">${{ data.accruedInterest }}</div>
+    </div> -->
+  </div>
+</div>
+<hr style="height:3px;border-width:0;color:lightslategrey;background-color:lightslategrey">
+
+<br>
+<h5 class="text-muted">Transactions</h5>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Amount</th>
+      <th scope="col">Type</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for trans in transactionList %}
+    <tr>
+      <th scope="row"></th>
+      <td>${{ trans.transactionAmt }}</td>
+      <td>{{ trans.transactionType }}</td>
+      <td>{{ trans.transactionDate }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+
+{% endblock %}

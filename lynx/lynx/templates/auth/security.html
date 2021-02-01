@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script type='text/javascript'>
+
+</script>
+
+{% if screenMode == 'users' %}
+{{ page_title('User Profile') }}
+{% else %}
+{{ page_title('My Profile') }}
+{% endif %}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" style="font-size: 1.1rem;" href="{{ url_for('auth.profile') }}">General</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" style="font-size: 1.1rem;" href="{{ url_for('auth.preferences') }}">Preferences</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" style="font-size: 1.1rem;" href="#">Security</a>
+  </li>
+</ul>
+<p></p>
+
+<div class="col-lg-12">
+  <form method="POST" role="form" action="security">
+    {{ form.csrf }}
+
+    {% if form.errors %}
+    <div class="alert alert-warning" style="color: #DC143C; padding-bottom: 0;">
+      <p>Please fix the errors and try again.</p>
+      <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if
+          field_errors %} {% for error in field_errors %}
+        <li>{{ form[field_name].label }}: {{ error }}</li>
+        {% endfor %} {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="form-group row">
+      <label for="currentpassword" class="col-lg-2 col-form-label">{{
+              form.currentpassword.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="password" class="form-control" id="currentpassword" name="currentpassword" value="{{ form.currentpassword.data }}"
+          placeholder="Current Password" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="password" class="col-lg-2 col-form-label">{{
+              form.password.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="password" class="form-control" id="password" name="password" value="{{ form.password.data }}"
+          placeholder="Password" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="confirm" class="col-lg-2 col-form-label">{{
+              form.confirm.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="password" class="form-control" id="confirm" name="confirm" value="{{ form.confirm.data }}"
+          placeholder="Confirm Password" required />
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <div class="col-lg-12 text-right">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+
+    
+  </form>
+</div>
+
+{% endblock %}

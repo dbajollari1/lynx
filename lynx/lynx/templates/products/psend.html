@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+{{ page_title('Send') }}
+
+<p></p>
+
+<div class="col-lg-12">
+  <form method="POST" role="form" action="psend">
+    {{ form.csrf }}
+
+    {% if form.errors %}
+    <div class="alert alert-warning" style="color: #DC143C; padding-bottom: 0;">
+      <p>Please fix the errors and try again.</p>
+      <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if
+          field_errors %} {% for error in field_errors %}
+        <li>{{ form[field_name].label }}: {{ error }}</li>
+        {% endfor %} {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="form-group row">
+      <label for="fromemail" class="col-lg-2 col-form-label">{{
+            form.fromemail.label
+          }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="fromemail" name="fromemail" value="{{ form.fromemail.data }}"
+          placeholder="From Address" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="toemail" class="col-lg-2 col-form-label">{{
+            form.toemail.label
+          }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="toemail" name="toemail" value="{{ form.toemail.data }}"
+          placeholder="To Address" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="amt" class="col-lg-2 col-form-label">{{
+            form.amt.label
+          }}</label>
+      <div class="input-group  mb-3 col-lg-10">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">{{ form.tokenSymbol.data }}</span>
+        </div>
+        <input type="number" class="form-control" id="amt" name="amt" value="{{ form.amt.data }}"
+          placeholder="Amount" required min="1" max="10000"  aria-describedby="basic-addon1"/>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-lg-12 text-right">
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,8 @@
+Dear user,
+
+Welcome! Thanks for signing up. Please follow this link to confirm your email address:
+
+{{ url_for('auth.confirm_email', token=token, _external=True) }}
+
+Sincerely,
+LynX

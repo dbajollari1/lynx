@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script type='text/javascript'>
+
+$ (document).ready(function () {
+    $("#startDate").datepicker();  //fired based on control id (#) instead of classname (.)
+  });
+
+</script>
+
+{% if screenMode == 'users' %}
+{{ page_title('User Profile') }}
+{% else %}
+{{ page_title('My Profile') }}
+{% endif %}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" style="font-size: 1.1rem;" href="#">General</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" style="font-size: 1.1rem;" href="{{ url_for('auth.preferences') }}">Preferences</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" style="font-size: 1.1rem;" href="{{ url_for('auth.security') }}">Security</a>
+  </li>
+</ul>
+<p></p>
+
+<div class="col-lg-12">
+  <form method="POST" role="form" action="profile">
+    {{ form.csrf }}
+    <input type="hidden" name="user_id" id="user_id" value="{{ form.user_id.data }}">
+
+    {% if form.errors %}
+    <div class="alert alert-warning" style="color: #DC143C; padding-bottom: 0;">
+      <p>Please fix the errors and try again.</p>
+      <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if
+          field_errors %} {% for error in field_errors %}
+        <li>{{ form[field_name].label }}: {{ error }}</li>
+        {% endfor %} {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="form-group row">
+      <label for="firstName" class="col-lg-2 col-form-label">{{
+          form.firstName.label
+        }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="firstName" name="firstName" value="{{ form.firstName.data }}"
+          placeholder="First Name" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="lastName" class="col-lg-2 col-form-label">{{
+            form.lastName.label
+          }}</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="lastName" name="lastName" value="{{ form.lastName.data }}"
+          placeholder="Last Name" required />
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label for="phone" class="col-lg-2 col-form-label">{{
+              form.phone.label
+            }}</label>
+      <div class="col-lg-10">
+        <input type="tel" class="form-control" id="phone" name="phone" value="{{ form.phone.data }}"
+          placeholder="Phone Number" required />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-lg-12 text-right">
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,247 @@
+{% from 'macros.html' import nav_link, page_title with context %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="LynX">
+  <meta name="author" content="">
+
+  <link rel="icon" href="/static/images/icon.ico">
+
+  <title>LynX</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+
+  <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+  <script type=text/javascript src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script type=text/javascript src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+
+  <script>
+    function confirmDeposit() {
+        return confirm("Please Confirm");
+    }
+    function confirmWithdraw() {
+        return confirm("Please Confirm");
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-bg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="/static/images/LYNX.jpg" alt="">
+        <!-- <span class="d-none d-sm-inline">LYNX</span> -->
+      </a>
+      <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse"
+        data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="my-1 mx-2 close">X</span>
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+
+          {% if current_user.is_authenticated %}
+
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="modal" data-target="#depositModal"
+                href="{{ url_for('products.deposit') }}">
+                <i class="fa fa-plus-square-o"></i>&nbsp;{{ gettext('Deposit') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="modal" data-target="#withdrawModal"
+                href="{{ url_for('products.withdraw') }}">
+                <i class="fa fa-money"></i>&nbsp;{{ gettext('Withdraw') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="{{ url_for('products.pinvest') }}">
+                <i class="fa fa-line-chart"></i>&nbsp;{{ gettext('Invest') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="{{ url_for('products.psend') }}">
+                <i class="fa fa-send-o"></i>&nbsp;{{ gettext('Send') }}</a>
+            </li>
+
+            <!-- Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" style="color:blue;">
+                <i class="fa fa-user-circle"></i>&nbsp;{{ current_user.firstName }}
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" style="padding:10px;" href="{{ url_for('auth.profile') }}"><i class="fa fa-user-o"></i>&nbsp;&nbsp;
+                  {{ gettext('My Profile') }}</a>
+                {% if current_user.userRole == 'A' %}
+                <a class="dropdown-item" style="padding:10px;" href="{{ url_for('auth.users') }}"><i
+                    class="fa fa-users"></i>&nbsp;&nbsp;
+                  Users</a>
+                {% endif %}
+                <hr style="margin-bottom: 0px;margin-top: 0px;">
+                <a class="dropdown-item" style="padding:10px;" href="{{ url_for('auth.logout') }}"><i
+                    class="fa fa-sign-out" style="font-size: 1.4rem;"></i>&nbsp;&nbsp;{{ gettext('Logout') }}</a>
+              </div>
+            </li>
+
+          {% else %}
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ gettext('Products') }}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" style="margin-bottom: 5px;" href="{{ url_for('public.save') }}"><i class="fa fa-bank"></i>&nbsp;&nbsp; {{ gettext('Save') }}</a>
+                <a class="dropdown-item" style="margin-bottom: 5px;" href="{{ url_for('public.invest') }}"><i class="fa fa-line-chart"></i>&nbsp;&nbsp; {{ gettext('Invest') }}</a>
+                <a class="dropdown-item" style="margin-bottom: 5px;" href="{{ url_for('public.send') }}"><i class="fa fa-send"></i>&nbsp;&nbsp; {{ gettext('Send') }}</a>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="{{ url_for('public.about') }}">{{ gettext('About Us') }}</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="{{ url_for('auth.login') }}">{{ gettext('Login') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="{{ url_for('auth.signup') }}">{{ gettext('Register') }}</a>
+            </li>
+
+            <li class="nav-item dropdown" >
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
+                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: medium; color: steelblue; margin-top: 4px;">
+                <i class="fa fa-language"></i>&nbsp;{{ session['userlang'] }}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">             
+                {% for local, lang in session['langs'] %}
+                  <a class="dropdown-item" style="margin-bottom: 5px;" href="{{ url_for('setlanguage', selectedLocale=local) }}">{{ lang }}</a>
+                {% endfor %}
+              </div>
+            </li>
+                        
+          {% endif %}
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container" style="min-height: 500px;padding-top:10px;">
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for m in messages %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ m }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+  </div>
+  <!-- /.container -->
+
+  <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="depositModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="depositTitle">
+          Deposit
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action={{ url_for('products.deposit') }} method="POST">
+
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="amount" class="col-lg-3 col-form-label">
+              Amount:
+            </label>
+            <div class="col-lg-8">
+              <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter Amount"
+                max="99999" min="5" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" onclick="return confirmDeposit();">Deposit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+
+  <div class="modal fade" id="withdrawModal" tabindex="-1" role="dialog" aria-labelledby="withdrawModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="withdrawTitle">
+          Withdraw
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form name="withdraw" action={{ url_for('products.withdraw') }} method="POST">
+
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="wamount" class="col-lg-3 col-form-label">
+              Amount:
+            </label>
+            <div class="col-lg-8">
+              <input type="number" class="form-control" id="wamount" name="wamount" placeholder="Enter Amount to Withdraw"
+                max="99999" min="5" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" onclick="return confirmWithdraw();">Withdraw</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+
+   <!-- FOOTER -->
+   <footer class="container" style="font-size: small;">
+    <hr style="height: 1px; margin: 1rem 0;">
+    <p class="float-right">
+      <a href="{{ url_for('public.contact') }}">Contact Us</a> &middot; 
+      <a href="{{ url_for('public.terms') }}">Terms</a>
+    </p>
+    <p>
+       &copy; 2020 Lynx, Inc.
+    </p>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+
+</body>
+
+</html>

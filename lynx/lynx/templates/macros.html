@@ -1,0 +1,30 @@
+{% macro nav_link(endpoint, name) %} 
+{% if request.endpoint != None and request.endpoint.endswith(endpoint)%}
+<li class="nav-item active">
+  <a class="nav-link" href="{{ url_for(endpoint) }}">{{ name }}
+    <span class="sr-only">(current)</span>
+  </a>
+</li>
+{% else %}
+<li class="nav-item">
+  <a class="nav-link" href="{{ url_for(endpoint) }}">{{ name }}</a>
+</li>
+{% endif %} {% endmacro %}
+
+{% macro page_title(title, buttonUrl='', buttonValue='') %} 
+<div class="row">
+  <div class="col-sm-6">
+      <h1 class="font-weight-light text-center text-lg-left">{{ title }}</h1>
+  </div>
+  {% if buttonUrl != '' %}
+  {% if current_user.is_authenticated and current_user.userRole == 'A' %}
+  <div class="col-sm-6 text-right mt-2">
+      <a class="btn btn-primary" href="{{ buttonUrl }}" role="button">
+          {{ buttonValue }}
+      </a>     
+  </div>
+  {% endif %} 
+  {% endif %} 
+</div>
+<hr class="mt-1 mb-4">
+{% endmacro %}
