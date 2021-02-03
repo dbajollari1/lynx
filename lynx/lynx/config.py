@@ -18,7 +18,7 @@ class Config(object):
     SUPPORT = 'abajollari@yahoo.com'
     ETHSCANR = 'ASFQIXUSZJRKFICTNWYVX8G7TI11WZ9FDD'
     ETHSCANM ='WIUA9D4APWKWMKDQGTW7BXSPMRN9EEA1DQ'
-    RUNENV = 'W'
+    RUNENV = 'L'
     NET = 'ropsten'
     SYMB = 'USDC'
     

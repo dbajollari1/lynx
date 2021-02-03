@@ -1,14 +1,14 @@
 # Translations template for PROJECT.
-# Copyright (C) 2020 ORGANIZATION
+# Copyright (C) 2021 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-12-24 21:36-0500\n"
+"POT-Creation-Date: 2021-02-02 11:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,47 +17,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: lynx/templates/layout.html:52
+#: lynx/templates/layout.html:60
 msgid "Deposit"
 msgstr ""
 
-#: lynx/templates/layout.html:57
+#: lynx/templates/layout.html:65
 msgid "Withdraw"
 msgstr ""
 
-#: lynx/templates/layout.html:62 lynx/templates/layout.html:97
+#: lynx/templates/layout.html:70 lynx/templates/layout.html:105
 msgid "Invest"
 msgstr ""
 
-#: lynx/templates/layout.html:67 lynx/templates/layout.html:98
+#: lynx/templates/layout.html:75 lynx/templates/layout.html:106
 msgid "Send"
 msgstr ""
 
-#: lynx/templates/layout.html:77
+#: lynx/templates/layout.html:85
 msgid "My Profile"
 msgstr ""
 
-#: lynx/templates/layout.html:85
+#: lynx/templates/layout.html:93
 msgid "Logout"
 msgstr ""
 
-#: lynx/templates/layout.html:93
+#: lynx/templates/layout.html:101
 msgid "Products"
 msgstr ""
 
-#: lynx/templates/layout.html:96
+#: lynx/templates/layout.html:104
 msgid "Save"
 msgstr ""
 
-#: lynx/templates/layout.html:104
+#: lynx/templates/layout.html:112
 msgid "About Us"
 msgstr ""
 
-#: lynx/templates/layout.html:109
+#: lynx/templates/layout.html:117
 msgid "Login"
 msgstr ""
 
-#: lynx/templates/layout.html:113
+#: lynx/templates/layout.html:121
 msgid "Register"
 msgstr ""
 
