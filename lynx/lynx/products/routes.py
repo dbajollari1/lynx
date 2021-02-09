@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash, redirect
 from lynx.products import bpProducts
-from lynx.products.forms import SendForm
+from lynx.products.forms import SendForm, InvestForm
 import datetime
 from flask_login import login_required, current_user
 from flask import current_app as app
@@ -8,6 +8,7 @@ from lynx.dataaccess.dashboardDAO import getWalletInfo
 from lynx.wallet.compound import getCompaundBalance, mintErcToken, redeemErcToken
 from lynx.wallet.wallet import getWalletTokenBalance, transferERCToken
 from lynx.auth.models import User
+from lynx.wallet.uniswap import tradeToken
 
 @bpProducts.route('/deposit', methods=['POST'])
 @login_required
@@ -67,16 +68,6 @@ def withdraw():
         app.logger.error(str(e), extra={'user': ''})
         return redirect(url_for('errors.error'))
 
-@bpProducts.route('/pinvest')
-@login_required
-def pinvest():
-    try:
-        return render_template('products/pinvest.html')
-    except Exception as e:
-        app.logger.error(str(e), extra={'user': ''})
-        return redirect(url_for('errors.error'))
-
-
 @bpProducts.route('/psend', methods=['GET', 'POST'])
 @login_required
 def psend():
@@ -112,3 +103,24 @@ def psend():
         flash(str(e))
         return redirect(url_for('errors.error'))
 
+
+@bpProducts.route('/pinvest', methods=['GET', 'POST'])
+@login_required
+def pinvest():
+    frm = InvestForm(request.form)
+    tokens = []
+    try:
+        for tkn in app.config['TOKENS'].items(): # items gives both: app.config['LANGUAGES'].keys() and .values()
+            tokens.append(tkn)
+        frm.Token.choices = tokens 
+        if request.method == 'POST':
+            if frm.validate():
+                userWall = getWalletInfo(current_user.id)
+                selected_token = frm.Token.data # request.form.get('language')
+                amount_token = frm.Amount.data
+                tradeToken(selected_token, amount_token, userWall)
+                flash("Trade Successful")
+        return render_template('products/pinvest.html', form = frm)
+    except Exception as e:
+        app.logger.error(str(e))
+        return redirect(url_for('errors.error'))

@@ -64,15 +64,17 @@
                 href="{{ url_for('products.withdraw') }}">
                 <i class="fa fa-money"></i>&nbsp;{{ gettext('Withdraw') }}</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link"
-                href="{{ url_for('products.pinvest') }}">
-                <i class="fa fa-line-chart"></i>&nbsp;{{ gettext('Invest') }}</a>
-            </li>
+           
             <li class="nav-item">
               <a class="nav-link"
                 href="{{ url_for('products.psend') }}">
                 <i class="fa fa-send-o"></i>&nbsp;{{ gettext('Send') }}</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="{{ url_for('products.pinvest') }}">
+                <i class="fa fa-send-o"></i>&nbsp;{{ gettext('Invest') }}</a>
             </li>
 
             <!-- Dropdown -->

@@ -12,7 +12,7 @@
     {{ form.csrf }}
 
     {% if form.errors %}
-    <div class="alert alert-warning" style="color: #DC143C; padding-bottom: 0;">
+    <div class="alert alert-warning" style="color: rgb(207, 192, 195); padding-bottom: 0;">
       <p>Please fix the errors and try again.</p>
       <ul class="errors">
         {% for field_name, field_errors in form.errors|dictsort if

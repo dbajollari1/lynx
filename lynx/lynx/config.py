@@ -29,3 +29,9 @@ class Config(object):
         'el': 'Greek',
         'fr': 'French'
     }
+
+    TOKENS = {
+        'MNFLX': 'Netflix Token',
+        'USDT': 'USDT Token',
+        'DAI': 'DAI Token'
+    }

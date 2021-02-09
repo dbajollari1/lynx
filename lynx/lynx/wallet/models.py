@@ -19,3 +19,13 @@ class CompoundData:
     self.amount_Minted = amount_Minted
     self.Txid = Txid
     self.apy = apy
+
+class UniswapData:
+  def __init__(self, amountOut = 0, amountInMax = 0, path = '', to = '', deadline = 0):
+    self.amountOut = amountOut
+    self.amountInMax = amountInMax
+    self.path = path
+    self.to = to
+    self.deadline = deadline
+ 
+    

@@ -33,7 +33,8 @@ def getContractAddress(symbol):
             "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
             "cBAT": "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",
             "BAT": "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
-            "cETH": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5"
+            "cETH": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5",
+            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
             },
         "ropsten": {
             "cUSDC": "0x8aF93cae804cC220D1A608d4FA54D1b6ca5EB361",
@@ -44,7 +45,8 @@ def getContractAddress(symbol):
             "DAI": "0xc2118d4d90b274016cB7a54c03EF52E6c537D957",
             "cBAT": "0x9E95c0b2412cE50C37a121622308e7a6177F819D",
             "BAT": "0x443Fd8D5766169416aE42B8E050fE9422f628419",
-            "cETH": "0xBe839b6D93E3eA47eFFcCA1F27841C917a8794f3"
+            "cETH": "0xBe839b6D93E3eA47eFFcCA1F27841C917a8794f3",
+            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
         }
     }
 
@@ -72,6 +74,11 @@ def getContractAbiJson(symbol):
             abiFileName = cwd + "\\lynx\\wallet\\abi\\erc20-abi.json"
         else:
             abiFileName = cwd + "/lynx/wallet/abi/erc20-abi.json"    
+    elif symbol == 'UNI':
+        if runenv == 'W':
+            abiFileName = cwd + "\\lynx\\wallet\\abi\\IUniswapV2Router02.json"
+        else:
+            abiFileName = cwd + "/lynx/wallet/abi/IUniswapV2Router02.json"  
     else:
         abiFileName = 'missing...'
  
