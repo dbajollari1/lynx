@@ -12,7 +12,7 @@ from lynx.services.mail_api import send_email
 from datetime import date, timedelta
 from lynx.services.token import confirm_token, generate_confirmation_token
 from lynx.wallet.wallet import generateWallet
-from lynx.dataaccess.dashboardDAO import saveWallet
+from lynx.auth.models import UserWallet
 import datetime
 
 @bpAuth.route('/login', methods=['GET', 'POST'])
@@ -98,12 +98,14 @@ def signup():
                             email_confirmed='N',
                             userRole='U')
                 db.session.add(user)
-                db.session.commit()
-   
+                db.session.flush() # populates new generated id
+                key, address = generateWallet(user.id)
+                wall = UserWallet(uid=user.id, mnemonic=str(user.id)+'xxx yyy zzz', privateKey=key, publicKey=str(user.id)+'pbkey', address=address, createdBy='lynx')
+                db.session.add(wall) # save wallet to db
+                
                 sendConfirmationEmail(email)
 
-                wall = generateWallet(user.id)
-                saveWallet(wall)
+                db.session.commit() # commit
                 
                 login_user(user)
                 flash('Thank You. Please confirm email address using the link we sent to your email.')

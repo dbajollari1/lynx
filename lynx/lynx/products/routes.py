@@ -1,13 +1,13 @@
 from flask import render_template, redirect, url_for, request, flash, redirect
 from lynx.products import bpProducts
-from lynx.products.forms import SendForm
+from lynx.products.forms import SendForm, InvestForm
 import datetime
 from flask_login import login_required, current_user
 from flask import current_app as app
-from lynx.dataaccess.dashboardDAO import getWalletInfo
 from lynx.wallet.compound import getCompaundBalance, mintErcToken, redeemErcToken
 from lynx.wallet.wallet import getWalletTokenBalance, transferERCToken
-from lynx.auth.models import User
+from lynx.auth.models import User, UserWallet
+from lynx.wallet.uniswap import tradeToken
 
 @bpProducts.route('/deposit', methods=['POST'])
 @login_required
@@ -21,8 +21,8 @@ def deposit():
             return redirect(url_for('home'))
 
         erc20_symbol = app.config['SYMB']
-        wall = getWalletInfo(current_user.id)
-        balance = getWalletTokenBalance(wall.Address, erc20_symbol)
+        wall = UserWallet.query.filter_by(uid=current_user.id).first()
+        balance = getWalletTokenBalance(wall.address, erc20_symbol)
 
         if balance < amt:
             flash('Insuficent funds')
@@ -50,8 +50,8 @@ def withdraw():
             return redirect(url_for('home'))
 
         erc20_symbol = app.config['SYMB']
-        wall = getWalletInfo(current_user.id)
-        compBalance = getCompaundBalance(wall.Address, erc20_symbol)
+        wall = UserWallet.query.filter_by(uid=current_user.id).first()
+        compBalance = getCompaundBalance(wall.address, erc20_symbol)
 
         if compBalance.current_balance < amt:
             flash('Insuficent funds')
@@ -67,14 +67,28 @@ def withdraw():
         app.logger.error(str(e), extra={'user': ''})
         return redirect(url_for('errors.error'))
 
-@bpProducts.route('/pinvest')
+
+@bpProducts.route('/pinvest', methods=['GET', 'POST'])
 @login_required
 def pinvest():
+    frm = InvestForm(request.form)
+    tokens = []
     try:
-        return render_template('products/pinvest.html')
+        for tkn in app.config['TOKENS'].items(): # items gives both: app.config['LANGUAGES'].keys() and .values()
+            tokens.append(tkn)
+        frm.Token.choices = tokens
+        
+        if request.method == 'POST':
+            if frm.validate():
+                userWall = UserWallet.query.filter_by(uid=current_user.id).first()
+                selected_token = frm.Token.data # request.form.get('language')
+                amount_token = frm.Amount.data
+                tradeToken(selected_token, amount_token, userWall)
+                flash("Trade Successfull")
+        return render_template('products/pinvest.html', form = frm)
     except Exception as e:
-        app.logger.error(str(e), extra={'user': ''})
-        return redirect(url_for('errors.error'))
+        app.logger.error(str(e))
+        return redirect(url_for('errors.error')) 
 
 
 @bpProducts.route('/psend', methods=['GET', 'POST'])
@@ -95,9 +109,9 @@ def psend():
                     flash('Invalid to user')
                     return render_template('products/psend.html',form=tr_form)
 
-                wallFrom = getWalletInfo(user1.id)
-                wallTo = getWalletInfo(user2.id)
-                ret = transferERCToken(wallFrom.Address, wallTo.Address, tr_form.amt.data, wallFrom.PrivateKey, tr_form.tokenSymbol.data)
+                wallFrom = UserWallet.query.filter_by(uid=user1.id).first()
+                wallTo = UserWallet.query.filter_by(uid=user2.id).first()
+                ret = transferERCToken(wallFrom.address, wallTo.address, tr_form.amt.data, wallFrom.PrivateKey, tr_form.tokenSymbol.data)
                 if str(ret).startswith("Error"):
                     flash(ret)
                 else:

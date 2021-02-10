@@ -1,6 +1,6 @@
 from eth_wallet import Wallet
 from eth_wallet.utils import generate_entropy
-from lynx.wallet.models import LynxWall, CompoundData
+from lynx.wallet.models import CompoundData
 from lynx.dashboard.models import UserTransaction
 import json
 import requests
@@ -79,7 +79,7 @@ def mintErcToken(amt, symbol, wallFrom):
     abi_json = getContractAbiJson('c' + symbol)
     abi = abi_json['c' + symbol]
     compound_token_contract = getContract(w3, abi, contract_address)
-    nonce = w3.eth.getTransactionCount(wallFrom.Address)
+    nonce = w3.eth.getTransactionCount(wallFrom.address)
 
     amount = convertAmountToWei(symbol, amt) # convert in underlying token balance (USDT and not cUSDT)
     mint_tx = compound_token_contract.functions.mint(int(amount)).buildTransaction({
@@ -103,7 +103,7 @@ def redeemErcToken(amt, symbol, wallFrom):
     abi_json = getContractAbiJson('c' + symbol)
     abi = abi_json['c' + symbol]
     compound_token_contract = getContract(w3, abi, contract_address)
-    nonce = w3.eth.getTransactionCount(wallFrom.Address)
+    nonce = w3.eth.getTransactionCount(wallFrom.address)
 
     amount =  convertAmountToWei(symbol, amt)
     redeem_tx = compound_token_contract.functions.redeemUnderlying(int(amount)).buildTransaction({

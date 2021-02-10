@@ -1,8 +1,5 @@
 from eth_wallet import Wallet
 from eth_wallet.utils import generate_entropy
-from lynx.wallet.models import LynxWall, CompoundData
-from lynx.dataaccess.dashboardDAO import getWalletInfo
-from lynx.dashboard.models import UserTransaction
 import json
 import requests
 from web3 import Web3
@@ -10,19 +7,19 @@ from decimal import Decimal
 import datetime
 from flask import current_app as app
 import math
-from lynx.wallet.helper import *
+from lynx.wallet.helper import getW3, getContractAddress, getContractAbiJson, getContract, getChainId, convertAmountToWei, convertAmountFromWei
 
 # Create a new wallet and save wallet info to db
 def generateWallet(uid):
     # 128 strength entropy
     ENTROPY = generate_entropy(strength=128)
     w3 = getW3()
-    acc = w3.eth.account.create(ENTROPY) #, 12, 'english', "m/44’/60’/0’/0/0")
+    acc = w3.eth.account.create(ENTROPY) #, 12, 'english', "m/44''/60'/0'/0/0")
     # print(acc)
     
-    # save to db
-    wallet = LynxWall(uid, 'xxx', str(acc._key_obj), 'yyy', acc.address)
-    return wallet
+    # return wallet info to be saved to db
+    # wallet = UserWallet(id=uid, mnemonic='xxx yyy zzz', privateKey=str(acc._key_obj), publicKey='pbkey', address=acc.address, createdBy='lynx')
+    return str(acc._key_obj), acc.address  #wallet
 
 # get balance of a specified ERC20 token in a wallet
 def getWalletTokenBalance(addr, erc20Token):

@@ -33,8 +33,21 @@ def getContractAddress(symbol):
             "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
             "cBAT": "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",
             "BAT": "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
-            "cETH": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5"
+            "cETH": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5",
+            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
             },
+        "kovan": {
+            "cUSDC": "0x4a92e71227d294f041bd82dd8f78591b75140d63",
+            "cUSDT": "0x3f0a0ea2f86bae6362cf9799b523ba06647da018",
+            "USDC": "0xb7a4f3e9097c08da09517b5ab877f7a917224ede",
+            "USDT": "0xedb7a045db7160336e3a6fe6d7bc95886b8a2c4a",
+            "cDAI": "0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad",
+            "DAI": "0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa",
+            "cBAT": "0x4a77faee9650b09849ff459ea1476eab01606c7a",
+            "BAT": "0x443Fd8D5766169416aE42B8E050fE9422f628419",
+            "cETH": "0x41b5844f4680a8c38fbb695b7f9cfd1f64474a72",
+            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+        },
         "ropsten": {
             "cUSDC": "0x8aF93cae804cC220D1A608d4FA54D1b6ca5EB361",
             "cUSDT": "0x135669c2dcBd63F639582b313883F101a4497F76",
@@ -44,7 +57,8 @@ def getContractAddress(symbol):
             "DAI": "0xc2118d4d90b274016cB7a54c03EF52E6c537D957",
             "cBAT": "0x9E95c0b2412cE50C37a121622308e7a6177F819D",
             "BAT": "0x443Fd8D5766169416aE42B8E050fE9422f628419",
-            "cETH": "0xBe839b6D93E3eA47eFFcCA1F27841C917a8794f3"
+            "cETH": "0xBe839b6D93E3eA47eFFcCA1F27841C917a8794f3",
+            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
         }
     }
 

@@ -11,14 +11,14 @@ from sqlalchemy.sql import func
 class User(UserMixin, db.Model):
     """Model for user accounts."""
 
-    __tablename__ = 'lynxusers'
+    __tablename__ = 'lynxuser'
 
     id = db.Column(db.Integer,
                    primary_key=True)
-    firstName = db.Column(db.String,
+    firstName = db.Column(db.String(100),
                      nullable=False,
                      unique=False)
-    lastName = db.Column(db.String,
+    lastName = db.Column(db.String(100),
                      nullable=False,
                      unique=False)
     email = db.Column(db.String(120),
@@ -85,3 +85,40 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
+
+class UserWallet(db.Model):
+    """Model for user wallet."""
+
+    __tablename__ = 'userwall'
+
+    id = db.Column(db.Integer,
+                   primary_key=True)
+    uid = db.Column(db.Integer,
+                    db.ForeignKey('lynxuser.id'))
+    mnemonic = db.Column(db.String(250),
+                     nullable=False,
+                     unique=True)
+    privateKey = db.Column(db.String(250),
+                     nullable=False,
+                     unique=True)
+    publicKey = db.Column(db.String(250),
+                      unique=True,
+                      nullable=False)
+    address = db.Column(db.String(250),
+                         primary_key=False,
+                         unique=False,
+                         nullable=False)                   
+    createdOn = db.Column(db.DateTime,
+                           index=False,
+                           unique=False,
+                           nullable=False,
+                           default=datetime.datetime.now)
+    createdBy = db.Column(db.String(120),
+                      unique=False,
+                      nullable=False)
+
+    # @classmethod
+    # def getWalletInfo(self, uid):
+    #     if uid is not None:
+    #         return self.query.get(uid)
+    #     return None

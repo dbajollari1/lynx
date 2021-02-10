@@ -8,6 +8,7 @@ class Config(object):
     MJ_EMAIL = 'arianb1@hotmail.com'
     SQLITE_PATH = 'db/lynx.sqlite'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../db/lynx.sqlite'
+    #SQLALCHEMY_DATABASE_URI = 'mysql://root:Sdav@1234@localhost:3306/lynx'  # ***must run:  pip install mysqlclient
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ST_PBK = 'pk_test_DCZF4C9gpgFyjNJQYGOYiGmx00aE0ErF94'
     ST_PVK = 'sk_test_8OGNYcJKB0TWieGnYFTlrmd700h8t0ovw6'
@@ -18,8 +19,8 @@ class Config(object):
     SUPPORT = 'abajollari@yahoo.com'
     ETHSCANR = 'ASFQIXUSZJRKFICTNWYVX8G7TI11WZ9FDD'
     ETHSCANM ='WIUA9D4APWKWMKDQGTW7BXSPMRN9EEA1DQ'
-    RUNENV = 'W'
-    NET = 'ropsten'
+    RUNENV = 'W' # W-Windows; L-Linux
+    NET = 'ropsten' #kovan
     SYMB = 'USDC'
     
     LANGUAGES = {
@@ -28,4 +29,10 @@ class Config(object):
         'it': 'Italian',
         'el': 'Greek',
         'fr': 'French'
+    }
+
+    TOKENS = {
+        'MNFLX': 'Netflix Token',
+        'USDT': 'USDT Token',
+        'DAI': 'DAI Token'
     }
