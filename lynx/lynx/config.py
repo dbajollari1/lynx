@@ -34,5 +34,6 @@ class Config(object):
     TOKENS = {
         'MNFLX': 'Netflix Token',
         'USDT': 'USDT Token',
-        'DAI': 'DAI Token'
+        'DAI': 'DAI Token',
+	'USDC': 'USDC Token'
     }
