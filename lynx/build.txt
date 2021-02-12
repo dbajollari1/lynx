@@ -25,5 +25,5 @@ pip install flask-babel
 --Generating a language catalog (run for each language)
 .\venv\Scripts\pybabel init -i messages.pot -d lynx/translations -l it
 
---compile trans files
+--compile translation files
 .\venv\Scripts\pybabel compile -d lynx/translations
