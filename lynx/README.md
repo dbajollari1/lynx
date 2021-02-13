@@ -1,15 +1,11 @@
 # LYNX-DIGITAL
 ---------------------
 ## Getting the code
-1. clone repository into local workspace 
-git clone https://github.com/dbajollari1/lynx.git
-2. change directory into repository
-cd lynx 
-3. verify all remote branches were cloned
-git branch --all 
-4. create worktree for branch you want to work in
-git worktree add ../lynx-<branch> <branch>  // *example: git worktree add ../lynx-Dev Dev*
-cd ../lynx-<branch>  //change into created worktree
+1. git clone https://github.com/dbajollari1/lynx.git  //clone repository into local workspace
+2. cd lynx // change directory into repository
+3. git branch --all  //verify all remote branches were cloned
+4. git worktree add ../lynx-<branch> <branch>   // create worktree for branch you want to work in *example: git worktree add ../lynx-Dev Dev*
+5. cd ../lynx-<branch>  //change into created worktree
 
 *if running from VS Code, open in"lynx-Dev/lynx" folder (not just lynx-Dev)*
 
