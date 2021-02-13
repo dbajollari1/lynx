@@ -10,6 +10,6 @@ class SendForm(Form):
     submit = SubmitField('Send')
 
 class InvestForm(Form):
-    Token = SelectField('Token', [ validators.DataRequired()])
+    Token = SelectField('Buy', [ validators.DataRequired()])
     Amount = DecimalField('Amount', [ validators.DataRequired()])
     submit = SubmitField('Trade') 

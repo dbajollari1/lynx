@@ -59,7 +59,7 @@ def transferEth(fromAddr, toAddr, amt, key):
 # Transfer ERC20 tokens between wallets
 def transferERCToken(fromAddr, toAddr, amt, key, symbol):
     try:
-        w3 =getW3()
+        w3 = getW3()
         
         availableBalance = getWalletTokenBalance(fromAddr, symbol)
         if amt > availableBalance:
@@ -87,3 +87,36 @@ def transferERCToken(fromAddr, toAddr, amt, key, symbol):
 
     except Exception as ex:
         return 'Error: ' + str(ex)
+
+# give permission to someone else/smartcontract (like Uniswap) to trade a token
+def approve(userAddress, tokenSymbol, smartContractAddress, amountToApprove, key):
+    try:
+        w3 = getW3()
+        contract_address = getContractAddress(tokenSymbol)
+        abi_json = getContractAbiJson('ERC20')
+        abi = abi_json
+        erc20_contract = getContract(w3, abi, contract_address)
+        nonce = w3.eth.getTransactionCount(userAddress)
+
+        appr_tx = erc20_contract.functions.approve(Web3.toChecksumAddress(smartContractAddress), int(amountToApprove)).buildTransaction({
+            'chainId': getChainId(), 
+            'gas': 500000,
+            'gasPrice': w3.toWei('20', 'gwei'),
+            'nonce': nonce
+        })
+        signed_tx = w3.eth.account.signTransaction(appr_tx, key)
+        tx_hash = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+        return w3.toHex(tx_hash)
+    except Exception as ex:
+        return str(ex)
+
+# check a smartcontract approved(allowance) amount for a token (SET BY "approve" function above)
+def isApproved(userAddress, tokenSymbol, smartContractAddress, amount):
+    w3 = getW3()
+    contract_address = getContractAddress(tokenSymbol)
+    abi_json = getContractAbiJson('ERC20')
+    abi = abi_json
+    erc20_contract = getContract(w3, abi, contract_address)
+
+    approved_amount = erc20_contract.functions.allowance(userAddress, smartContractAddress).call()
+    return approved_amount >= amount

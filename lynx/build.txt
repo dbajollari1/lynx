@@ -2,7 +2,7 @@
 ========================
 --setup env
 ========================
-cd lynx                            # in vscode, just open terminal
+cd lynx                            # in vscode, open terminal and check you are in ....\lynx-<branch>\lynx
 python --version                    # must be higher then 3.7.3
 python -m venv venv
 venv\Scripts\Activate.ps1           # activate environment

@@ -111,7 +111,7 @@ def psend():
 
                 wallFrom = UserWallet.query.filter_by(uid=user1.id).first()
                 wallTo = UserWallet.query.filter_by(uid=user2.id).first()
-                ret = transferERCToken(wallFrom.address, wallTo.address, tr_form.amt.data, wallFrom.PrivateKey, tr_form.tokenSymbol.data)
+                ret = transferERCToken(wallFrom.address, wallTo.address, tr_form.amt.data, wallFrom.privateKey, tr_form.tokenSymbol.data)
                 if str(ret).startswith("Error"):
                     flash(ret)
                 else:

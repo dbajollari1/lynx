@@ -314,7 +314,7 @@ def userinfo(user_id = 0):
             # wall = genwall(userId)
             # saveWall(wall)
 
-            flash('Profile successfully updated') #: ' + wall.Address)
+            flash('Profile successfully updated') #: ' + wall.address)
             return redirect(url_for('home'))
     else:
         if not current_user.is_authenticated:

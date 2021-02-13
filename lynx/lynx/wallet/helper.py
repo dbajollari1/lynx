@@ -54,7 +54,7 @@ def getContractAddress(symbol):
             "USDC": "0x0D9C8723B343A8368BebE0B5E89273fF8D712e3C",
             "USDT": "0x516de3a7A567d81737e3a46ec4FF9cFD1fcb0136",
             "cDAI": "0xdb5Ed4605C11822811a39F94314fDb8F0fb59A2C",
-            "DAI": "0xc2118d4d90b274016cB7a54c03EF52E6c537D957",
+            "DAI": "0x31f42841c2db5173425b5223809cf3a38fede360",
             "cBAT": "0x9E95c0b2412cE50C37a121622308e7a6177F819D",
             "BAT": "0x443Fd8D5766169416aE42B8E050fE9422f628419",
             "cETH": "0xBe839b6D93E3eA47eFFcCA1F27841C917a8794f3",
@@ -66,7 +66,7 @@ def getContractAddress(symbol):
 
     return address[network][symbol]
 
-def getContractAbiJson(symbol):
+def getContractAbiJson(contractABI):
 
     # abi_url = "https://raw.githubusercontent.com/compound-finance/compound-protocol/master/networks/mainnet-abi.json"
     # abi_url = "https://raw.githubusercontent.com/compound-finance/compound-protocol/master/networks/ropsten-abi.json"
@@ -76,16 +76,21 @@ def getContractAbiJson(symbol):
     abiFileName = ''
     runenv = app.config['RUNENV'] # W-Windows or L-Linux
 
-    if symbol != 'ERC20':   # symbol == 'cUSDT' or symbol == 'cUSDC' or symbol == 'cDAI': ...
+    if contractABI == 'UNI':
+        if runenv == 'W':
+            abiFileName = cwd + "\\lynx\\wallet\\abi\\uni-abi.json"
+        else:
+            abiFileName = cwd + "/lynx/wallet/abi/uni-abi.json"   
+    elif contractABI == 'ERC20': # any erc20 token
+        if runenv == 'W':
+            abiFileName = cwd + "\\lynx\\wallet\\abi\\erc20-abi.json"
+        else:
+            abiFileName = cwd + "/lynx/wallet/abi/erc20-abi.json"         
+    elif contractABI == 'COMP':
         if runenv == 'W':
             abiFileName = cwd + "\\lynx\\wallet\\abi\\comp-abi.json"
         else:
             abiFileName = cwd + "/lynx/wallet/abi/comp-abi.json"
-    elif symbol == 'ERC20': # any erc20 token
-        if runenv == 'W':
-            abiFileName = cwd + "\\lynx\\wallet\\abi\\erc20-abi.json"
-        else:
-            abiFileName = cwd + "/lynx/wallet/abi/erc20-abi.json"    
     else:
         abiFileName = 'missing...'
  

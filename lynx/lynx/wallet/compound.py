@@ -21,7 +21,7 @@ def getCompaundBalance(addr, erc20Token):
 
     w3 =getW3()
     contract_address = getContractAddress(symbol)
-    abi_json = getContractAbiJson(symbol)
+    abi_json = getContractAbiJson('COMP')
     abi = abi_json[symbol]
     compound_token_contract = getContract(w3,abi,contract_address) 
 
@@ -76,7 +76,7 @@ def getUserTransactions(addr, erc20Token):
 def mintErcToken(amt, symbol, wallFrom):
     w3 =getW3()
     contract_address = getContractAddress('c' + symbol)
-    abi_json = getContractAbiJson('c' + symbol)
+    abi_json = getContractAbiJson('COMP')
     abi = abi_json['c' + symbol]
     compound_token_contract = getContract(w3, abi, contract_address)
     nonce = w3.eth.getTransactionCount(wallFrom.address)
@@ -88,7 +88,7 @@ def mintErcToken(amt, symbol, wallFrom):
         'gasPrice': w3.toWei('20', 'gwei'),
         'nonce': nonce
     })
-    signed_txn = w3.eth.account.sign_transaction(mint_tx, wallFrom.PrivateKey)
+    signed_txn = w3.eth.account.sign_transaction(mint_tx, wallFrom.privateKey)
     try:
         tx = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         return tx.hex()
@@ -100,7 +100,7 @@ def mintErcToken(amt, symbol, wallFrom):
 def redeemErcToken(amt, symbol, wallFrom):
     w3 =getW3()
     contract_address = getContractAddress('c' + symbol)
-    abi_json = getContractAbiJson('c' + symbol)
+    abi_json = getContractAbiJson('COMP')
     abi = abi_json['c' + symbol]
     compound_token_contract = getContract(w3, abi, contract_address)
     nonce = w3.eth.getTransactionCount(wallFrom.address)
@@ -113,7 +113,7 @@ def redeemErcToken(amt, symbol, wallFrom):
         'nonce': nonce
     })
 
-    signed_txn = w3.eth.account.sign_transaction(redeem_tx, wallFrom.PrivateKey)
+    signed_txn = w3.eth.account.sign_transaction(redeem_tx, wallFrom.privateKey)
     try:
         tx = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         return tx.hex()
@@ -126,7 +126,7 @@ def getTokenAPR(erc20Token):
     symbol = 'c' + erc20Token.upper()
     w3 =getW3()
     contract_address = getContractAddress(symbol)
-    abi_json = getContractAbiJson(symbol)
+    abi_json = getContractAbiJson('COMP')
     abi = abi_json[symbol]
     compound_token_contract = getContract(w3,abi,contract_address) 
 
