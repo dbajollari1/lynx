@@ -18,9 +18,9 @@ class Config(object):
     SUPPORT = 'abajollari@yahoo.com'
     ETHSCANR = 'ASFQIXUSZJRKFICTNWYVX8G7TI11WZ9FDD'
     ETHSCANM ='WIUA9D4APWKWMKDQGTW7BXSPMRN9EEA1DQ'
-    RUNENV = 'W' # W-Windows; L-Linux
-    NET = 'ropsten' #kovan
-    SYMB = 'USDT'
+    RUNENV = 'L' # W-Windows; L-Linux
+    NET = 'kovan' #kovan
+    SYMB = 'USDC'
     
     LANGUAGES = {
         'en': 'English',

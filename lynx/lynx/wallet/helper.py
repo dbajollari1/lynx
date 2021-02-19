@@ -39,14 +39,16 @@ def getContractAddress(symbol):
         "kovan": {
             "cUSDC": "0x4a92e71227d294f041bd82dd8f78591b75140d63",
             "cUSDT": "0x3f0a0ea2f86bae6362cf9799b523ba06647da018",
-            "USDC": "0xb7a4f3e9097c08da09517b5ab877f7a917224ede",
+            "aUSDC": "0x04160599dB5811ECf9147a22c30D6bb6931744a3",
+            "USDC": "0xe22da380ee6B445bb8273C81944ADEB6E8450422",
             "USDT": "0xedb7a045db7160336e3a6fe6d7bc95886b8a2c4a",
             "cDAI": "0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad",
             "DAI": "0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa",
             "cBAT": "0x4a77faee9650b09849ff459ea1476eab01606c7a",
             "BAT": "0x443Fd8D5766169416aE42B8E050fE9422f628419",
             "cETH": "0x41b5844f4680a8c38fbb695b7f9cfd1f64474a72",
-            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+            "UNI": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+            "LPAP": "0x88757f2f99175387ab4c6a4b3067c77a695b0349"
         },
         "ropsten": {
             "cUSDC": "0x8aF93cae804cC220D1A608d4FA54D1b6ca5EB361",
@@ -91,6 +93,11 @@ def getContractAbiJson(contractABI):
             abiFileName = cwd + "\\lynx\\wallet\\abi\\comp-abi.json"
         else:
             abiFileName = cwd + "/lynx/wallet/abi/comp-abi.json"
+    elif contractABI == 'AAVE':
+        if runenv == 'W':
+            abiFileName = cwd + "\\lynx\\wallet\\abi\\aave-abi.json"
+        else:
+            abiFileName = cwd + "/lynx/wallet/abi/aave-abi.json"
     else:
         abiFileName = 'missing...'
  
