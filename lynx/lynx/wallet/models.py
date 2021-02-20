@@ -1,4 +1,4 @@
-class CompoundData:
+class SavingsData:
   def __init__(self, userId = 0, symbol='', principal=0, current_balance=0, interest_accrued=0, 
   ctoken_balance=0, amount_ToMint=0, amount_Minted=0, Txid='', apy=0):
     self.userId = userId

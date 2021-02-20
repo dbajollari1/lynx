@@ -11,29 +11,32 @@ import datetime
 from flask import current_app as app
 import math
 from lynx.wallet.helper import *
+from lynx.wallet.wallet import approve, isApproved, getWalletTokenBalance
 from lynx.wallet.savings import Savings
 
 
-class SavingsCompound(Savings):
+class SavingsAave(Savings):
+
+    LENDING_POOL_CONTRACT_ADDR = '0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe'
 
     def getDepositData(self):
         cdata = SavingsData
         cdata.current_balance = 0
         cdata.interest_accrued = 0
         cdata.ctoken_balance = 0
-        symbol = 'c' + self.tokenSymbol.upper()
+        symbol = 'a' + self.tokenSymbol.upper()
 
         w3 = getW3()
         contract_address = getTokenAddress(symbol)
-        abi_json = getContractAbiJson('COMP')
-        abi = abi_json[symbol]
-        compound_token_contract = getContract(w3, abi, contract_address)
+        abi_json = getContractAbiJson('ATOKEN')  # Aave token
+        abi = abi_json  # ['result']
+        aave_token_contract = getContract(w3, abi, contract_address)
 
-        user_underlyingbalance = compound_token_contract.functions.balanceOfUnderlying(
+        user_underlyingbalance = aave_token_contract.functions.balanceOf(
             self.userWallet.address).call()
 
-        # underlying symbol (not compound symbol)
-        cdata.symbol = symbol.replace('c', '', 1)
+        # underlying symbol (not aave symbol)
+        cdata.symbol = symbol.replace('a', '', 1)
         cdata.current_balance = convertAmountFromWei(
             cdata.symbol, user_underlyingbalance)
         cdata.interest_accrued = 0
@@ -64,10 +67,10 @@ class SavingsCompound(Savings):
         jsonData = trans.json()
 
         transactionList = []
-        compTokenContract = getTokenAddress('c' + self.tokenSymbol).lower()
+        compTokenContract = getTokenAddress('a' + self.tokenSymbol).lower()
 
         for transaction in jsonData['result']:
-            # or transaction['tokenSymbol'] == 'c' + self.tokenSymbol:
+            # or transaction['tokenSymbol'] == 'c' + tokenSymbol:
             if transaction['tokenSymbol'] == self.tokenSymbol:
                 userTran = UserTransaction()
                 show = False
@@ -93,23 +96,31 @@ class SavingsCompound(Savings):
 
         return transactionList
 
-    # Deposit/mint to Compound
+    # Deposit to Aave - actions(deposit/withdraw...) are performed against LendingPool contract and not against aToken like compound
     def doDeposit(self, amt):
+
+        if not isApproved(self.userWallet.address, self.tokenSymbol, self.LENDING_POOL_CONTRACT_ADDR, amt, ''):
+            approve(self.userWallet.address, self.tokenSymbol,
+                    self.LENDING_POOL_CONTRACT_ADDR, amt, self.userWallet.privateKey, '')
+
         w3 = getW3()
-        contract_address = getTokenAddress('c' + self.tokenSymbol)
-        abi_json = getContractAbiJson('COMP')
-        abi = abi_json['c' + self.tokenSymbol]
-        compound_token_contract = getContract(w3, abi, contract_address)
+        # lendingpool contract address
+        contract_address = self.LENDING_POOL_CONTRACT_ADDR
+        abi_json = getContractAbiJson('AAVE')
+        abi = abi_json['result']
+        lendingPool_contract = getContract(w3, abi, contract_address)
         nonce = w3.eth.getTransactionCount(self.userWallet.address)
 
+        tokenAddress = getTokenAddress(self.tokenSymbol)  # 'a' + symbol)
         # convert in underlying token balance (USDT and not cUSDT)
-        amount = convertAmountToWei(self.tokenSymbol, amt)
-        mint_tx = compound_token_contract.functions.mint(int(amount)).buildTransaction({
-            'chainId': getChainId(),  # 1 for mainnet, 3 for ropsten
-            'gas': 500000,
-            'gasPrice': w3.toWei('20', 'gwei'),
-            'nonce': nonce
-        })
+        amt = convertAmountToWei(self.tokenSymbol, amt)
+        mint_tx = lendingPool_contract.functions.deposit(Web3.toChecksumAddress(tokenAddress), int(amt),
+                                                         Web3.toChecksumAddress(self.userWallet.address), int(0)).buildTransaction({
+                                                             'chainId': getChainId(),
+                                                             'gas': 500000,
+                                                             'gasPrice': w3.toWei('20', 'gwei'),
+                                                             'nonce': nonce
+                                                         })
         signed_txn = w3.eth.account.sign_transaction(
             mint_tx, self.userWallet.privateKey)
         try:
@@ -119,22 +130,26 @@ class SavingsCompound(Savings):
             # return (json.loads(str(err).replace("'", '"')), 402, {'Content-Type': 'application/json'})
             return 'Error: ' + str(err)
 
-    # Withdraw/redeem from Compound
+    # Withdraw from Aave
     def doWithdraw(self, amt):
+        # function withdraw(address asset, uint256 amt, address to)
         w3 = getW3()
-        contract_address = getTokenAddress('c' + self.tokenSymbol)
-        abi_json = getContractAbiJson('COMP')
-        abi = abi_json['c' + self.tokenSymbol]
-        compound_token_contract = getContract(w3, abi, contract_address)
+        # lendingpool contract address
+        contract_address = self.LENDING_POOL_CONTRACT_ADDR
+        abi_json = getContractAbiJson('AAVE')
+        abi = abi_json['result']
+        lendingPool_contract = getContract(w3, abi, contract_address)
         nonce = w3.eth.getTransactionCount(self.userWallet.address)
 
-        amount = convertAmountToWei(self.tokenSymbol, amt)
-        redeem_tx = compound_token_contract.functions.redeemUnderlying(int(amount)).buildTransaction({
-            'chainId': getChainId(),  # 1 for mainnet, 3 for ropsten
-            'gas': 500000,
-            'gasPrice': w3.toWei('20', 'gwei'),
-            'nonce': nonce
-        })
+        tokenAddress = getTokenAddress(self.tokenSymbol)
+        amt = convertAmountToWei(self.tokenSymbol, amt)
+        redeem_tx = lendingPool_contract.functions.withdraw(Web3.toChecksumAddress(tokenAddress),
+                                                            int(amt), Web3.toChecksumAddress(self.userWallet.address)).buildTransaction({
+                                                                'chainId': getChainId(),
+                                                                'gas': 500000,
+                                                                'gasPrice': w3.toWei('20', 'gwei'),
+                                                                'nonce': nonce
+                                                            })
 
         signed_txn = w3.eth.account.sign_transaction(
             redeem_tx, self.userWallet.privateKey)
@@ -145,22 +160,18 @@ class SavingsCompound(Savings):
             # return (json.loads(str(err).replace("'", '"')), 402, {'Content-Type': 'application/json'})
             return 'Error: ' + str(err)
 
-    # Compound APY
+    # Aave APY
     def getTokenAPY(self):
-        symbol = 'c' + self.tokenSymbol.upper()
         w3 = getW3()
-        contract_address = getTokenAddress(symbol)
-        abi_json = getContractAbiJson('COMP')
-        abi = abi_json[symbol]
-        compound_token_contract = getContract(w3, abi, contract_address)
+        # lendingpool contract address
+        contract_address = self.LENDING_POOL_CONTRACT_ADDR
+        abi_json = getContractAbiJson('AAVE')
+        abi = abi_json['result']
+        lendingPool_contract = getContract(w3, abi, contract_address)
 
-        Rate = compound_token_contract.functions.supplyRatePerBlock().call()
-        ETH_Mantissa = 1 * 10 ** 18  # (ETH has 18 decimal places)
-        # (based on 4 blocks occurring every minute)
-        BlocksPerDay = 4 * 60 * 24
-        DaysPerYear = 365
+        tokenAddress = getTokenAddress(self.tokenSymbol)
 
-        # not same as compound website formula!!!
-        APY = (((Rate / ETH_Mantissa * BlocksPerDay + 1) ** DaysPerYear) - 1) * 100
-        #APY = (((math.pow((Rate / ETH_Mantissa * BlocksPerDay) + 1, DaysPerYear - 1))) - 1) * 100
-        return APY
+        reserveData = lendingPool_contract.functions.getReserveData(
+            Web3.toChecksumAddress(tokenAddress)).call()
+        # fourth element has the borrowRate in ray (27 digits )
+        return (reserveData[3] / 10 ** 27) * 100  # convert to %

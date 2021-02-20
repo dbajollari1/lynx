@@ -2,3 +2,5 @@ venv
 *.pyc
 .vscode
 lynx.log
+*.zip
+db
