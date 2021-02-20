@@ -7,24 +7,25 @@ from decimal import Decimal
 import datetime
 from flask import current_app as app
 import math
-from lynx.wallet.helper import getW3, getContractAddress, getContractAbiJson, getContract, getChainId, convertAmountToWei, convertAmountFromWei
+from lynx.wallet.helper import getW3, getTokenAddress, getContractAbiJson, getContract, getChainId, convertAmountToWei, convertAmountFromWei
 
 # Create a new wallet and save wallet info to db
 def generateWallet(uid):
     # 128 strength entropy
     ENTROPY = generate_entropy(strength=128)
     w3 = getW3()
-    acc = w3.eth.account.create(ENTROPY) #, 12, 'english', "m/44''/60'/0'/0/0")
+    # , 12, 'english', "m/44''/60'/0'/0/0")
+    acc = w3.eth.account.create(ENTROPY)
     # print(acc)
-    
+
     # return wallet info to be saved to db
     # wallet = UserWallet(id=uid, mnemonic='xxx yyy zzz', privateKey=str(acc._key_obj), publicKey='pbkey', address=acc.address, createdBy='lynx')
-    return str(acc._key_obj), acc.address  #wallet
+    return str(acc._key_obj), acc.address  # wallet
 
 # get balance of a specified ERC20 token in a wallet
 def getWalletTokenBalance(addr, erc20Token):
     w3 = getW3()
-    contract_address = getContractAddress(erc20Token)
+    contract_address = getTokenAddress(erc20Token)
     abi_json = getContractAbiJson('ERC20')
     abi = abi_json
     erc20_token_contract = getContract(w3, abi, contract_address)
@@ -34,14 +35,14 @@ def getWalletTokenBalance(addr, erc20Token):
 
 # get balance of Eths in a wallet
 def getEthBalance(addr):
-    w3 =getW3()
+    w3 = getW3()
     bal = w3.eth.getBalance(addr)
     return w3.fromWei(bal, 'ether')
 
 # Transfer Eth between wallets
 def transferEth(fromAddr, toAddr, amt, key):
     try:
-        w3 =getW3()
+        w3 = getW3()
         nonce = w3.eth.getTransactionCount(fromAddr)
         tx = {
             'nonce': nonce,
@@ -60,24 +61,24 @@ def transferEth(fromAddr, toAddr, amt, key):
 def transferERCToken(fromAddr, toAddr, amt, key, symbol):
     try:
         w3 = getW3()
-        
+
         availableBalance = getWalletTokenBalance(fromAddr, symbol)
         if amt > availableBalance:
             return 'Error: Not enough funds.'
 
-        contract_address = getContractAddress(symbol)
+        contract_address = getTokenAddress(symbol)
         abi_json = getContractAbiJson('ERC20')
         abi = abi_json
         erc20_token_contract = getContract(w3, abi, contract_address)
 
         nonce = w3.eth.getTransactionCount(fromAddr)
-        amount =  convertAmountToWei(symbol, amt)
+        amount = convertAmountToWei(symbol, amt)
         transfer_tx = erc20_token_contract.functions.transfer(toAddr, int(amount)).buildTransaction({
-                'chainId': getChainId(), # 1 for mainnet, 3 for ropsten
-                'gas': 500000,
-                'gasPrice': w3.toWei('20', 'gwei'),
-                'nonce': nonce
-            })
+            'chainId': getChainId(),  # 1 for mainnet, 3 for ropsten
+            'gas': 500000,
+            'gasPrice': w3.toWei('20', 'gwei'),
+            'nonce': nonce
+        })
         signed_txn = w3.eth.account.sign_transaction(transfer_tx, key)
         try:
             tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
@@ -89,17 +90,17 @@ def transferERCToken(fromAddr, toAddr, amt, key, symbol):
         return 'Error: ' + str(ex)
 
 # give permission to someone else/smartcontract (like Uniswap) to trade a token
-def approve(userAddress, tokenSymbol, smartContractAddress, amountToApprove, key):
+def approve(userAddress, tokenSymbol, smartContractAddress, amountToApprove, key, protocol=''):
     try:
         w3 = getW3()
-        contract_address = getContractAddress(tokenSymbol)
+        contract_address = getTokenAddress(tokenSymbol, protocol)
         abi_json = getContractAbiJson('ERC20')
         abi = abi_json
         erc20_contract = getContract(w3, abi, contract_address)
         nonce = w3.eth.getTransactionCount(userAddress)
 
         appr_tx = erc20_contract.functions.approve(Web3.toChecksumAddress(smartContractAddress), int(amountToApprove)).buildTransaction({
-            'chainId': getChainId(), 
+            'chainId': getChainId(),
             'gas': 500000,
             'gasPrice': w3.toWei('20', 'gwei'),
             'nonce': nonce
@@ -111,12 +112,13 @@ def approve(userAddress, tokenSymbol, smartContractAddress, amountToApprove, key
         return str(ex)
 
 # check a smartcontract approved(allowance) amount for a token (SET BY "approve" function above)
-def isApproved(userAddress, tokenSymbol, smartContractAddress, amount):
+def isApproved(userAddress, tokenSymbol, smartContractAddress, amount, protocol=''):
     w3 = getW3()
-    contract_address = getContractAddress(tokenSymbol)
+    contract_address = getTokenAddress(tokenSymbol, protocol)
     abi_json = getContractAbiJson('ERC20')
     abi = abi_json
     erc20_contract = getContract(w3, abi, contract_address)
 
-    approved_amount = erc20_contract.functions.allowance(userAddress, smartContractAddress).call()
+    approved_amount = erc20_contract.functions.allowance(
+        userAddress, smartContractAddress).call()
     return approved_amount >= amount

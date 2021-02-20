@@ -5,32 +5,44 @@ from flask_login import login_required, current_user
 from flask import current_app as app
 from lynx.dashboard.models import Dashboard
 from lynx.wallet.wallet import getWalletTokenBalance, getEthBalance
-from lynx.wallet.compound import getCompaundBalance, getUserTransactions, getTokenAPR
+from lynx.wallet.compound import SavingsCompound
 from lynx.auth.models import User, UserWallet
+from lynx.wallet.aave import SavingsAave
+
 
 @bpDasboard.route('/dashboard')
 @login_required
 def dashboard():
     try:
+
         showWalletInfo = request.args.get('show') or ''
 
         erc20_symbol = app.config['SYMB']
         wall = UserWallet.query.filter_by(uid=current_user.id).first()
-        dashboard_data = getCompaundBalance(wall.address, erc20_symbol)
-        apy = getTokenAPR(erc20_symbol)
-        dashboard_data.apy = str(round(apy, 2))
+        savingPlatform = app.config['PROTOCOL']  # Compound / Aave
+
+        # need some class factory to remove if/else
+        if savingPlatform == 'COMP':
+            compSavings = SavingsCompound(wall, erc20_symbol)
+            dashboard_data = compSavings.getDepositData()
+            trans_data = compSavings.getUserTransactions()
+            dashboard_data.apy = str(round(compSavings.getTokenAPY(), 2))
+        else:  # Aave
+            aaveSavings = SavingsAave(wall, erc20_symbol)
+            dashboard_data = aaveSavings.getDepositData()
+            trans_data = aaveSavings.getUserTransactions()
+            dashboard_data.apy = str(round(aaveSavings.getTokenAPY(), 2))
 
         erc20_balance = ''
         ethBalance = ''
         if showWalletInfo.upper() == 'Y':
-            erc20_balance = str(getWalletTokenBalance(wall.address, erc20_symbol)) + ' ' + erc20_symbol
+            erc20_balance = str(getWalletTokenBalance(
+                wall.address, erc20_symbol)) + ' ' + erc20_symbol
             ethBalance = str(getEthBalance(wall.address)) + ' ETH'
 
-        trans_data = getUserTransactions(wall.address, erc20_symbol)
-
-        return render_template('dashboard/dashboard.html', data = dashboard_data, transactionList = trans_data, 
-                                    ad = wall.address, tokenbalance = erc20_balance, ethbalance = ethBalance, 
-                                    showAddr = showWalletInfo.upper())
+        return render_template('dashboard/dashboard.html', data=dashboard_data, transactionList=trans_data,
+                               ad=wall.address, tokenbalance=erc20_balance, ethbalance=ethBalance,
+                               showAddr=showWalletInfo.upper())
     except Exception as e:
         app.logger.error(str(e), extra={'user': ''})
         return redirect(url_for('errors.error'))
